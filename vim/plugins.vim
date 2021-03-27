@@ -125,7 +125,7 @@ Plug 'sheerun/vim-polyglot', {'tag': 'v4.2.1'}   " conflicts with vimtex (see po
 Plug 'tmux-plugins/vim-tmux'
 
 Plug 'klen/python-mode', { 'branch': 'develop' } |
-      \ Plug 'wookayin/vim-python-enhanced-syntax'
+      "\ Plug 'wookayin/vim-python-enhanced-syntax'
 Plug 'davidhalter/jedi-vim'
 if has('nvim') && s:python3_version() >= '3.5'
   Plug 'numirias/semshi', { 'do': function('DoRemote') }
