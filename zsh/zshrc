@@ -205,3 +205,44 @@ ssh-add ~/.ssh/id_rsa
 if [ -z "$TMUX" ] && [ ! -S ~/.ssh/ssh_auth_sock ] && [ -S "$SSH_AUTH_SOCK" ]; then
     ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
 fi
+
+# >>>> it's about accessing the stanford clusters.
+# Get CS ticket
+alias kinit_cs="mkdir -p ${HOME}/.krb5 && KRB5CCNAME=${KRB5_CS_CACHE} kinit -r 720h -l 72h seungju@CS.STANFORD.EDU"
+
+# Get HAIC ticket
+alias kinit_hai="mkdir -p ${HOME}/.krb5 && KRB5CCNAME=${KRB5_HAIC_CACHE} kinit -r 720h -l 72h seungju@stanford.edu"
+
+# Refresh Kerberos ticket
+alias krefresh="kinit -R"
+
+# Kerberos cache management
+export KRB5_CS_CACHE="FILE:${HOME}/.krb5/cc_cs"
+export KRB5_HAIC_CACHE="FILE:${HOME}/.krb5/cc_hai"
+# Switch to CS context
+alias use_cs="export KRB5CCNAME=${KRB5_CS_CACHE} && echo 'Switched to CS Kerberos tickets.'"
+
+# Switch to HAIC context
+alias use_hai="export KRB5CCNAME=${KRB5_HAIC_CACHE} && echo 'Switched to HAIC Kerberos tickets.'"
+
+# Return to default context
+alias use_default="unset KRB5CCNAME && echo 'Switched to default Kerberos tickets.'"
+# Auto-renew Kerberos tickets and set default context on terminal startup
+# Renew CS ticket
+use_cs
+if KRB5CCNAME=${KRB5_CS_CACHE} klist -s >/dev/null 2>&1; then
+    echo "Renewing CS Kerberos ticket..."
+    KRB5CCNAME=${KRB5_CS_CACHE} kinit -R
+fi
+
+# Renew HAIC ticket
+use_hai
+if KRB5CCNAME=${KRB5_HAIC_CACHE} klist -s >/dev/null 2>&1; then
+    echo "Renewing HAIC Kerberos ticket..."
+    KRB5CCNAME=${KRB5_HAIC_CACHE} kinit -R
+fi
+
+# Set default Kerberos context
+unset KRB5CCNAME
+echo "Switched to default Kerberos context."
+# <<<<
